@@ -1,3 +1,6 @@
+/* =======================
+   popup.js - Handles saving filter type and reloading tab
+   ======================= */
 document.getElementById("apply").addEventListener("click", () => {
     const filterType = document.getElementById("filterType").value;
     chrome.storage.sync.set({ filterType });

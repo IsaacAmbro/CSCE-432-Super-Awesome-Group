@@ -1,4 +1,6 @@
-
+/* =======================
+   content.js - Injects CSS to apply SVG filter based on user selection
+   ======================= */
 chrome.storage.sync.get("filterType", ({ filterType }) => {
     const filterMap = {
       protanopia: "url('filters/protanopia.svg#protanopia')",

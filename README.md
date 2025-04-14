@@ -3,7 +3,7 @@
 
 A Chrome extension that applies customizable color filters to webpages, helping individuals with various types of color blindness better perceive on-screen content.
 
-## 💡 Features
+## Features
 
 -  Simulates **Protanopia**, **Deuteranopia**, and **Tritanopia**
 -  Remembers user preference across sessions

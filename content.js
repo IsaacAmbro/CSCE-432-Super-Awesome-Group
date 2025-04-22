@@ -34,21 +34,33 @@
 
       `
     };
-  
-    if (filterType && filterType !== "none" && svgFilters[filterType]) {
-      const svgNS = "http://www.w3.org/2000/svg";
-      const svg = document.createElementNS(svgNS, "svg");
-      svg.setAttribute("style", "position: absolute; height: 0; width: 0;");
-      svg.innerHTML = `<defs>${svgFilters[filterType]}</defs>`;
-      document.body.appendChild(svg);
-  
-      const style = document.createElement("style");
-      style.textContent = `
-        html {
-          filter: url(#colorblindFilter);
-        }
-      `;
-      document.head.appendChild(style);
-    }
+   
+    chrome.storage.sync.get(["filterType", "advanced"], ({ filterType, advanced }) => {
+      if (filterType && filterType !== "none" && svgFilters[filterType]) {
+        // inject the SVG filter
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg   = document.createElementNS(svgNS, "svg");
+        svg.setAttribute("style", "position:absolute;height:0;width:0;");
+        svg.innerHTML = `<defs>${svgFilters[filterType]}</defs>`;
+        document.body.appendChild(svg);
+    
+        // pull our offsets (default to zero)
+        const cOff = (advanced && advanced.contrast)   || 0;
+        const bOff = (advanced && advanced.brightness) || 0;
+        const sOff = (advanced && advanced.saturate)   || 0;
+    
+        // inject CSS that chains url() + our offsets
+        const style = document.createElement("style");
+        style.textContent = `
+          html {
+            filter: 
+              url(#colorblindFilter)
+              contrast(${1 + cOff})
+              brightness(${1 + bOff})
+              saturate(${1 + sOff});
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    });
   });
-  

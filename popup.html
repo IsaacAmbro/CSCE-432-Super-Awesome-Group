@@ -1,165 +1,130 @@
-<!--
-=======================
-popup.html - Extension UI for selecting filter
-=======================
---> 
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Color Blind Filter</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f4f4f4;
-      padding: 0 16px 16px;
-      width: 260px;
-    }
-    h2 {
-      text-align: center;
-      margin-top: 16px;
-      margin-bottom: 12px;
-    }
+  <head>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f4f4f4;
+        padding: 16px;
+        width: 260px;
+        text-align: center;
+      }
+      h2 { margin-top: 0; }
 
-    /* Tabs */
-    #tabs {
-      display: flex;
-      margin-bottom: 8px;
-    }
-    .tab {
-      flex: 1;
-      padding: 8px;
-      text-align: center;
-      cursor: pointer;
-      background: #e0e0e0;
-      border-radius: 4px 4px 0 0;
-      user-select: none;
-    }
-    .tab.active {
-      background: white;
-      font-weight: bold;
-    }
+      /* Tabs */
+      .tabs {
+        display: flex;
+        margin-bottom: 12px;
+      }
+      .tab {
+        flex: 1;
+        padding: 8px;
+        background: #e0e0e0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        text-align: center;
+      }
+      .tab.active {
+        background: white;
+        font-weight: bold;
+        border-bottom: none;
+      }
 
-    /* Panels */
-    .panel {
-      display: none;
-      background: white;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-top: none;
-      border-radius: 0 0 4px 4px;
-    }
-    .panel.active {
-      display: block;
-    }
+      /* Panel containers */
+      #basicSettings, #advancedSettings {
+        background: white;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        margin-bottom: 12px;
+      }
 
-    select, button, input[type=range] {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 6px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-top: 8px;
+        text-align: left;
+      }
+      select, input[type=range], button {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+      input[type=range] {
+        -webkit-appearance: none;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
 
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
+      #previewContainer {
+        border: 1px solid #ddd;
+        padding: 8px;
+        background: white;
+        border-radius: 8px;
+        margin-top: 12px;
+      }
+      #preview {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        transition: filter 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>EquiColor</h2>
 
-    #previewContainer {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    #preview {
-      max-width: 200px;
-      transition: filter 0.3s ease;
-    }
-  </style>
-</head>
-<body>
-  <h2>Color Blind Filter</h2>
+    <div class="tabs">
+      <div id="tab-basic" class="tab active">Basic</div>
+      <div id="tab-advanced" class="tab">Advanced</div>
+    </div>
 
-  <div id="tabs">
-    <div id="tab-basic" class="tab active">Basic</div>
-    <div id="tab-advanced" class="tab">Advanced</div>
-  </div>
+    <!-- BASIC PANEL -->
+    <div id="basicSettings">
+      <label for="filterType">Select a filter:</label>
+      <select id="filterType">
+        <option value="none">None</option>
+        <option value="protanopia">Protanopia</option>
+        <option value="deuteranopia">Deuteranopia</option>
+        <option value="tritanopia">Tritanopia</option>
+      </select>
 
-  <!-- Basic Panel -->
-  <div id="panel-basic" class="panel active">
-    <label for="filterType">Select a filter:</label>
-    <select id="filterType">
-      <option value="none">None</option>
-      <option value="protanopia">Protanopia</option>
-      <option value="deuteranopia">Deuteranopia</option>
-      <option value="tritanopia">Tritanopia</option>
-    </select>
+      <div id="previewContainer">
+        <img id="preview" src="wheel.png" alt="Preview" />
+      </div>
+    </div>
 
-    <div id="previewContainer">
-      <img id="preview" src="wheel.png" alt="Preview" />
+    <!-- ADVANCED PANEL -->
+    <div id="advancedSettings" style="display: none;">
+      <label for="advContrast">
+        Contrast offset: <span id="advContrastValue">0.0</span>
+      </label>
+      <input type="range" id="advContrast" min="-0.5" max="0.5" step="0.1" value="0">
+
+      <label for="advBrightness">
+        Brightness offset: <span id="advBrightnessValue">0.0</span>
+      </label>
+      <input type="range" id="advBrightness" min="-0.5" max="0.5" step="0.1" value="0">
+
+      <label for="advSaturate">
+        Saturation offset: <span id="advSaturateValue">0.0</span>
+      </label>
+      <input type="range" id="advSaturate" min="-0.5" max="0.5" step="0.1" value="0">
     </div>
 
     <button id="apply">Apply Filter</button>
-  </div>
 
-  <!-- Advanced Panel -->
-  <div id="panel-advanced" class="panel">
-    <label>Grayscale: <span id="val-grayscale">0</span></label>
-    <input
-      type="range"
-      id="grayscale"
-      min="0"
-      max="1"
-      step="0.01"
-      value="0"
-    >
-
-    <label>Saturate: <span id="val-saturate">1</span></label>
-    <input
-      type="range"
-      id="saturate"
-      min="0"
-      max="3"
-      step="0.01"
-      value="1"
-    >
-
-    <label>Contrast: <span id="val-contrast">1</span></label>
-    <input
-      type="range"
-      id="contrast"
-      min="0"
-      max="3"
-      step="0.01"
-      value="1"
-    >
-
-    <label>Brightness: <span id="val-brightness">1</span></label>
-    <input
-      type="range"
-      id="brightness"
-      min="0"
-      max="3"
-      step="0.01"
-      value="1"
-    >
-
-    <label>Hue Rotate (°): <span id="val-hue">0</span></label>
-    <input
-      type="range"
-      id="hue"
-      min="0"
-      max="360"
-      step="1"
-      value="0"
-    >
-  </div>
-
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>

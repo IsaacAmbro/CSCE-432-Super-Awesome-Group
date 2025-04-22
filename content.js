@@ -5,30 +5,32 @@
     const svgFilters = {
       protanopia: `
         <filter id="colorblindFilter">
-            <feColorMatrix type="matrix" values="
-                1.0, 0.0, 0.0, 0, 0,
-                0.0, 1.0, 0.0, 0, 0,
-                0.0, 0.0, 1.25, 0, 0,
-                0.0, 0.0, 0.0, 1, 0" />
-            </filter>
+          <feColorMatrix type="matrix" values="
+            1.2,  0.0,  0.0, 0, 0,
+            0.0,  1.0,  0.0, 0, 0,
+            0.2,  0.2,  1.3, 0, 0,
+            0,    0,    0,   1, 0" />
+        </filter>
       `,
       deuteranopia: `
         <filter id="colorblindFilter">
-            <feColorMatrix type="matrix" values="
-                1.0, 0.0, 0.0, 0, 0,
-                0.0, 1.2, 0.0, 0, 0,
-                0.0, 0.0, 1.0, 0, 0,
-                0.0, 0.0, 0.0, 1, 0" />
-            </filter>
+          <feColorMatrix type="matrix" values="
+            1.3,  0.0,  0.0, 0, 0,
+            0.0,  1.0,  0.0, 0, 0,
+            0.0,  0.2,  1.2, 0, 0,
+            0,    0,    0,   1, 0" />
+        </filter>
+
       `,
       tritanopia: `
         <filter id="colorblindFilter">
-            <feColorMatrix type="matrix" values="
-                1.0, 0.0, 0.1, 0, 0,
-                0.0, 1.0, 0.0, 0, 0,
-                0.0, 0.0, 0.9, 0, 0,
-                0.0, 0.0, 0.0, 1, 0" />
-            </filter>
+          <feColorMatrix type="matrix" values="
+            1.0,  0.0,  0.1, 0, 0,
+            0.0,  1.1,  0.0, 0, 0,
+            0.2,  0.3,  1.2, 0, 0,
+            0,    0,    0,   1, 0" />
+        </filter>
+
 
       `
     };

@@ -3,70 +3,95 @@
 popup.html - Extension UI for selecting filter
 =======================
 --> 
-
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      body {
-        font-family: "Segoe UI", sans-serif;
-        background: #f4f4f4;
-        padding: 16px;
-        width: 260px;
-        text-align: center;
-      }
+<head>
+  <meta charset="utf-8">
+  <title>Color Blind Filter</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f4f4;
+      padding: 0 16px 16px;
+      width: 260px;
+    }
+    h2 {
+      text-align: center;
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
 
-      h2 {
-        margin-top: 0;
-      }
+    /* Tabs */
+    #tabs {
+      display: flex;
+      margin-bottom: 8px;
+    }
+    .tab {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+      background: #e0e0e0;
+      border-radius: 4px 4px 0 0;
+      user-select: none;
+    }
+    .tab.active {
+      background: white;
+      font-weight: bold;
+    }
 
-      label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 8px;
-        text-align: left;
-      }
+    /* Panels */
+    .panel {
+      display: none;
+      background: white;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+    }
+    .panel.active {
+      display: block;
+    }
 
-      select, button {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 12px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-      }
+    select, button, input[type=range] {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
 
-      button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
 
-      button:hover {
-        background-color: #0056b3;
-      }
+    #previewContainer {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    #preview {
+      max-width: 200px;
+      transition: filter 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <h2>Color Blind Filter</h2>
 
-      #previewContainer {
-        border: 1px solid #ddd;
-        padding: 8px;
-        background: white;
-        border-radius: 8px;
-        margin-bottom: 12px;
-      }
+  <div id="tabs">
+    <div id="tab-basic" class="tab active">Basic</div>
+    <div id="tab-advanced" class="tab">Advanced</div>
+  </div>
 
-      #preview {
-        width: 100%;
-        max-width: 200px;
-        height: auto;
-        filter: none;
-        transition: filter 0.3s ease;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Color Blind Filter</h2>
-
+  <!-- Basic Panel -->
+  <div id="panel-basic" class="panel active">
     <label for="filterType">Select a filter:</label>
     <select id="filterType">
       <option value="none">None</option>
@@ -80,33 +105,61 @@ popup.html - Extension UI for selecting filter
     </div>
 
     <button id="apply">Apply Filter</button>
+  </div>
 
-    <script src="popup.js"></script>
-    <script>
-      // Update the preview filter dynamically
-      const filterMap = {
-        none: "none",
-        protanopia: "url(#previewProtanopia)",
-        deuteranopia: "url(#previewDeuteranopia)",
-        tritanopia: "url(#previewTritanopia)"
-      };
+  <!-- Advanced Panel -->
+  <div id="panel-advanced" class="panel">
+    <label>Grayscale: <span id="val-grayscale">0</span></label>
+    <input
+      type="range"
+      id="grayscale"
+      min="0"
+      max="1"
+      step="0.01"
+      value="0"
+    >
 
-      const preview = document.getElementById("preview");
-      const filterTypeSelect = document.getElementById("filterType");
+    <label>Saturate: <span id="val-saturate">1</span></label>
+    <input
+      type="range"
+      id="saturate"
+      min="0"
+      max="3"
+      step="0.01"
+      value="1"
+    >
 
-      filterTypeSelect.addEventListener("change", () => {
-        const type = filterTypeSelect.value;
-        // Live preview using CSS simulation (simplified)
-        if (type === "protanopia") {
-          preview.style.filter = "grayscale(0.4) contrast(1.1)";
-        } else if (type === "deuteranopia") {
-          preview.style.filter = "sepia(0.3) saturate(1.4)";
-        } else if (type === "tritanopia") {
-          preview.style.filter = "hue-rotate(60deg)";
-        } else {
-          preview.style.filter = "none";
-        }
-      });
-    </script>
-  </body>
+    <label>Contrast: <span id="val-contrast">1</span></label>
+    <input
+      type="range"
+      id="contrast"
+      min="0"
+      max="3"
+      step="0.01"
+      value="1"
+    >
+
+    <label>Brightness: <span id="val-brightness">1</span></label>
+    <input
+      type="range"
+      id="brightness"
+      min="0"
+      max="3"
+      step="0.01"
+      value="1"
+    >
+
+    <label>Hue Rotate (°): <span id="val-hue">0</span></label>
+    <input
+      type="range"
+      id="hue"
+      min="0"
+      max="360"
+      step="1"
+      value="0"
+    >
+  </div>
+
+  <script src="popup.js"></script>
+</body>
 </html>

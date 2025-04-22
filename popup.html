@@ -45,6 +45,7 @@ popup.html - Extension UI for selecting filter
 
       button:hover {
         background-color: #0056b3;
+        transform: scale(1.02);
       }
 
       #previewContainer {
@@ -56,16 +57,19 @@ popup.html - Extension UI for selecting filter
       }
 
       #preview {
-        width: 100%;
-        max-width: 200px;
-        height: auto;
-        filter: none;
-        transition: filter 0.3s ease;
-      }
+  all: unset;
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 6px;
+  margin: 0 auto;
+}
+
     </style>
   </head>
   <body>
-    <h2>Color Blind Filter</h2>
+    <h2>EquiColor</h2>
 
     <label for="filterType">Select a filter:</label>
     <select id="filterType">
@@ -83,29 +87,19 @@ popup.html - Extension UI for selecting filter
 
     <script src="popup.js"></script>
     <script>
-      // Update the preview filter dynamically
-      const filterMap = {
-        none: "none",
-        protanopia: "url(#previewProtanopia)",
-        deuteranopia: "url(#previewDeuteranopia)",
-        tritanopia: "url(#previewTritanopia)"
+      const imageMap = {
+        none: "wheel.png",
+        protanopia: "protanopia.png",
+        deuteranopia: "deuteranopia.png",
+        tritanopia: "tritanopia.png"
       };
 
       const preview = document.getElementById("preview");
       const filterTypeSelect = document.getElementById("filterType");
 
       filterTypeSelect.addEventListener("change", () => {
-        const type = filterTypeSelect.value;
-        // Live preview using CSS simulation (simplified)
-        if (type === "protanopia") {
-          preview.style.filter = "grayscale(0.4) contrast(1.1)";
-        } else if (type === "deuteranopia") {
-          preview.style.filter = "sepia(0.3) saturate(1.4)";
-        } else if (type === "tritanopia") {
-          preview.style.filter = "hue-rotate(60deg)";
-        } else {
-          preview.style.filter = "none";
-        }
+        const selectedType = filterTypeSelect.value;
+        preview.src = "wheel.png";
       });
     </script>
   </body>

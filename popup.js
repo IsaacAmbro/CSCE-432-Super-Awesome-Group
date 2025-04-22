@@ -1,40 +1,56 @@
 /* =======================
    popup.js - Handles saving filter type and reloading tab
    ======================= */
+
+   const svgFilters = {
+    protanopia: `
+      <filter id="popupFilter">
+        <feColorMatrix type="matrix" values="
+          1.2,  0.0,  0.0, 0, 0,
+          0.0,  1.0,  0.0, 0, 0,
+          0.2,  0.2,  1.3, 0, 0,
+          0,    0,    0,   1, 0" />
+      </filter>
+    `,
+    deuteranopia: `
+      <filter id="popupFilter">
+        <feColorMatrix type="matrix" values="
+          1.3,  0.0,  0.0, 0, 0,
+          0.0,  1.0,  0.0, 0, 0,
+          0.0,  0.2,  1.2, 0, 0,
+          0,    0,    0,   1, 0" />
+      </filter>
+    `,
+    tritanopia: `
+      <filter id="popupFilter">
+        <feColorMatrix type="matrix" values="
+          1.0,  0.0,  0.1, 0, 0,
+          0.0,  1.1,  0.0, 0, 0,
+          0.2,  0.3,  1.2, 0, 0,
+          0,    0,    0,   1, 0" />
+      </filter>
+    `
+  };
+  
+
    document.addEventListener("DOMContentLoaded", () => {
     const filterTypeSelect = document.getElementById("filterType");
+  
     const preview = document.getElementById("preview");
-  
-    const updatePreviewFilter = (type) => {
-      switch (type) {
-        case "protanopia":
-          preview.style.filter = "grayscale(0.3) contrast(1.1) brightness(1.1)";
-          break;
-        case "deuteranopia":
-          preview.style.filter = "sepia(0.4) saturate(1.3) contrast(1.1)";
-          break;
-        case "tritanopia":
-          preview.style.filter = "hue-rotate(90deg) contrast(1.1)";
-          break;
-        default:
-          preview.style.filter = "none";
-          break;
-      }
-    };
-  
-    // Load stored filter preference on popup open
-    chrome.storage.sync.get("filterType", ({ filterType }) => {
-      if (filterType) {
-        filterTypeSelect.value = filterType;
-        updatePreviewFilter(filterType);
-      }
-    });
-  
-    // Change preview when dropdown changes
+    const svgWrapper = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgWrapper.setAttribute("style", "position: absolute; width: 0; height: 0;");
+    document.body.appendChild(svgWrapper);
+
+    function applyPopupSVGFilter(type) {
+      svgWrapper.innerHTML = `<defs>${svgFilters[type] || ""}</defs>`;
+      preview.style.filter = type !== "none" ? "url(#popupFilter)" : "none";
+    }
+
     filterTypeSelect.addEventListener("change", () => {
-      const selected = filterTypeSelect.value;
-      updatePreviewFilter(selected);
+      const selectedType = filterTypeSelect.value;
+      applyPopupSVGFilter(selectedType);
     });
+
   
     // Apply the filter to the webpage
     document.getElementById("apply").addEventListener("click", () => {

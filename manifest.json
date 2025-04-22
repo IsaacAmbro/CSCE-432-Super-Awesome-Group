@@ -1,7 +1,7 @@
 
 {
     "manifest_version": 3,
-    "name": "Color Blind Filter",
+    "name": "EquiColor",
     "version": "1.0",
     "description": "Apply customizable color filters to assist color blind users.",
     "permissions": ["scripting", "storage"],

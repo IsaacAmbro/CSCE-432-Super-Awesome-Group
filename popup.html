@@ -8,19 +8,105 @@ popup.html - Extension UI for selecting filter
 <html>
   <head>
     <style>
-      body { font-family: Arial, sans-serif; padding: 10px; }
-      label, select { display: block; margin: 10px 0; }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f4f4f4;
+        padding: 16px;
+        width: 260px;
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-align: left;
+      }
+
+      select, button {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #previewContainer {
+        border: 1px solid #ddd;
+        padding: 8px;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
+
+      #preview {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        filter: none;
+        transition: filter 0.3s ease;
+      }
     </style>
   </head>
   <body>
-    <label for="filterType">Choose color blindness type:</label>
+    <h2>Color Blind Filter</h2>
+
+    <label for="filterType">Select a filter:</label>
     <select id="filterType">
       <option value="none">None</option>
       <option value="protanopia">Protanopia</option>
       <option value="deuteranopia">Deuteranopia</option>
       <option value="tritanopia">Tritanopia</option>
     </select>
+
+    <div id="previewContainer">
+      <img id="preview" src="wheel.png" alt="Preview" />
+    </div>
+
     <button id="apply">Apply Filter</button>
+
     <script src="popup.js"></script>
+    <script>
+      // Update the preview filter dynamically
+      const filterMap = {
+        none: "none",
+        protanopia: "url(#previewProtanopia)",
+        deuteranopia: "url(#previewDeuteranopia)",
+        tritanopia: "url(#previewTritanopia)"
+      };
+
+      const preview = document.getElementById("preview");
+      const filterTypeSelect = document.getElementById("filterType");
+
+      filterTypeSelect.addEventListener("change", () => {
+        const type = filterTypeSelect.value;
+        // Live preview using CSS simulation (simplified)
+        if (type === "protanopia") {
+          preview.style.filter = "grayscale(0.4) contrast(1.1)";
+        } else if (type === "deuteranopia") {
+          preview.style.filter = "sepia(0.3) saturate(1.4)";
+        } else if (type === "tritanopia") {
+          preview.style.filter = "hue-rotate(60deg)";
+        } else {
+          preview.style.filter = "none";
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,54 +1,32 @@
 /* =======================
    content.js - Injects CSS to apply SVG filter based on user selection
    ======================= */
-   chrome.storage.sync.get("filterType", ({ filterType }) => {
-    const svgFilters = {
-      protanopia: `
-        <filter id="colorblindFilter">
-          <feColorMatrix type="matrix" values="
-            1.2,  0.0,  0.0, 0, 0,
-            0.0,  1.0,  0.0, 0, 0,
-            0.2,  0.2,  1.3, 0, 0,
-            0,    0,    0,   1, 0" />
-        </filter>
-      `,
-      deuteranopia: `
-        <filter id="colorblindFilter">
-          <feColorMatrix type="matrix" values="
-            1.3,  0.0,  0.0, 0, 0,
-            0.0,  1.0,  0.0, 0, 0,
-            0.0,  0.2,  1.2, 0, 0,
-            0,    0,    0,   1, 0" />
-        </filter>
+   // content.js
+chrome.storage.sync.get(
+  ["filterType","advancedSettings"],
+  ({ filterType, advancedSettings }) => {
+    if (!filterType || filterType === "none") return;
 
-      `,
-      tritanopia: `
-        <filter id="colorblindFilter">
-          <feColorMatrix type="matrix" values="
-            1.0,  0.0,  0.1, 0, 0,
-            0.0,  1.1,  0.0, 0, 0,
-            0.2,  0.3,  1.2, 0, 0,
-            0,    0,    0,   1, 0" />
-        </filter>
-
-
-      `
+    // Build the same filter string as popup
+    const buildFilter = (type, adv) => {
+      const presets = {
+        protanopia:  { grayscale: adv.grayscale||0.3, saturate: adv.saturate||1, contrast:adv.contrast||1, brightness:adv.brightness||1, hue: adv.hue||0 },
+        deuteranopia:{ grayscale: adv.grayscale||0, saturate: adv.saturate||1.3, contrast:adv.contrast||1, brightness:adv.brightness||1, hue: adv.hue||0 },
+        tritanopia:  { grayscale: adv.grayscale||0, saturate: adv.saturate||1, contrast:adv.contrast||1, brightness:adv.brightness||1, hue: adv.hue||90 }
+      };
+      const s = presets[type] || {};
+      return [
+        `grayscale(${s.grayscale})`,
+        `saturate(${s.saturate})`,
+        `contrast(${s.contrast})`,
+        `brightness(${s.brightness})`,
+        `hue-rotate(${s.hue}deg)`
+      ].join(" ");
     };
-  
-    if (filterType && filterType !== "none" && svgFilters[filterType]) {
-      const svgNS = "http://www.w3.org/2000/svg";
-      const svg = document.createElementNS(svgNS, "svg");
-      svg.setAttribute("style", "position: absolute; height: 0; width: 0;");
-      svg.innerHTML = `<defs>${svgFilters[filterType]}</defs>`;
-      document.body.appendChild(svg);
-  
-      const style = document.createElement("style");
-      style.textContent = `
-        html {
-          filter: url(#colorblindFilter);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-  });
-  
+
+    const cssFilter = buildFilter(filterType, advancedSettings||{});
+    const style = document.createElement("style");
+    style.textContent = `html { filter: ${cssFilter} !important; }`;
+    document.head.appendChild(style);
+  }
+);
